@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/admin_dash_v99" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/budget_calculator_v99" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/easy_edit_v99" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/geomarker_v99" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/quick_permissions_v99" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/www/redcap/modules/quick_projects_v99" vcs="Git" />
+  </component>
+</project>
