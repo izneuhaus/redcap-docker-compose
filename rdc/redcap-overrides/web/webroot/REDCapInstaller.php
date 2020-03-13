@@ -143,6 +143,20 @@ class REDCapInstaller {
                         // is not the default for the protocol
                         $q = $this->db_query("UPDATE redcap_config set value = '$this->redcap_webroot_url' where field_name='redcap_base_url'");
 
+                        $users = json_decode(file_get_contents('users.json'), true);
+
+                        foreach ($users as $user) {
+                            error_log($this->createUser(
+                                $user['username'],
+                                $user['email'],
+                                $user['first_name'],
+                                $user['last_name'],
+                                $user['password'],
+                                $user['super'],
+                                $user['account_manager']
+                            ));
+                        }
+
                         // Direct the user to the remainder of the REDCap install.php
                         $this->successes[] = "Installed $redcap_tables REDCap tables to " . $this->db . " on " . $this->hostname;
                         $this->successes[] = "<h5>Initial setup complete!</h5>You should <strong>SKIP step 1</strong> on" .

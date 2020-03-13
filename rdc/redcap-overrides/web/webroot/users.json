@@ -1,0 +1,20 @@
+[
+  {
+    "username": "test_admin",
+    "email": "test-admin@test.com",
+    "first_name": "test",
+    "last_name": "admin",
+    "password": "password_admin",
+    "super": 1,
+    "account_manager": 0
+  },
+  {
+    "username": "test_user",
+    "email": "test-user@test.com",
+    "first_name": "test",
+    "last_name": "user",
+    "password": "password_user",
+    "super": 0,
+    "account_manager": 0
+  }
+]
