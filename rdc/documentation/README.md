@@ -258,21 +258,19 @@ As of this writing, these ports are defined in .env
 WEB_PORT=80
 MYSQL_PORT=3306
 PHPMYADMIN_PORT=8080
-SMTP_PORT=1025
 MAILHOG_PORT=8025
 ```
 
 When you go to pick port numbers, it is generally safest to pick from the range 1024 - 65535. Each of the values selected for these port numbers needs to be unique to across the running instances.
 
-If you want to run a lot of instances at once, consider a pattern for setting the ports wherein the REDCap version forms the last 3 or 4 digits of the port number while the first digit indicates which of the 5 assignments is which. You could work the `DOCKER_PREFIX` into the pattern as well. e.g., REDCap 9.4.2 would get these parameters:
+If you want to run a lot of instances at once, consider a pattern for setting the ports wherein the REDCap version forms the last 3 or 4 digits of the port number while the first digit indicates which of the 4 assignments is which. You could work the `DOCKER_PREFIX` into the pattern as well. e.g., REDCap 9.4.2 would get these parameters:
 
 ```
 DOCKER_PREFIX=rc942
 WEB_PORT=1942
 MYSQL_PORT=2942
 PHPMYADMIN_PORT=3942
-SMTP_PORT=4942
-MAILHOG_PORT=5942
+MAILHOG_PORT=4942
 ```
 
 You can paste a block of parameters like this at the end of the .env file to override all of the parameters above.
@@ -396,3 +394,50 @@ select your redcap.sql.gz from step 1.
 
 At this point you should be running your dev server on a new version of mySql.  You can use the same process to change
 your database version anytime.
+
+1. How can I use Docker to run various commands against my database?
+   ```shell script
+   # SEE THE NETWORK FOR YOUR DOCKER-COMPOSE CONTAINERS (e.g. rdc_default)
+   docker network list
+
+   # BASIC TEST OF CONNECTION
+   docker run --rm \
+     --network=rdc_default \
+     imega/mysql-client \
+     mysql --host=db --user=root --password=root --execute='show databases;'
+
+   # GET A SHELL
+   docker run -it \
+     --network=rdc_default \
+     --volume $(pwd):/mysqldump \
+     imega/mysql-client \
+     /bin/sh
+
+   # GET A MYSQL SHELL
+   docker run -it \
+     --network=rdc_default \
+     --volume $(pwd):/mysqldump \
+     imega/mysql-client \
+     mysql --host=db --user=root --password=root
+
+   # GET A MYSQL DUMP
+   docker run --rm \
+     --network=rdc_default \
+     --volume $(pwd):/mysqldump \
+     imega/mysql-client \
+     /bin/sh -c "mysqldump --host=db --user=root --password=root redcap > /mysqldump/redcap_backup.sql"
+
+   # GET A MYSQL DUMP GZIPPED (doing the sh -c seemed necessary as volume wasn't otherwise immediately ready?)
+   docker run --rm \
+     --network=rdc_default \
+     --volume $(pwd):/mysqldump \
+     imega/mysql-client \
+     /bin/sh -c "mysqldump --host=db --user=root --password=root redcap | gzip > /mysqldump/redcap_backup.sql.gz"
+
+   # RESTORE A MYSQL DUMP FROM sql.gz FILE
+   docker run -it \
+     --network=rdc_default \
+     --volume $(pwd):/mysqldump \
+     imega/mysql-client \
+     /bin/sh -c "mysql --host=db --user=root --password=root --execute 'create database if not exists new_db'; gunzip < /mysqldump/redcap_backup.sql.gz | mysql --host=db --user=root --password=root new_db"
+   ```
